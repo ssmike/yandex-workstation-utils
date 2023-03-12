@@ -3,7 +3,7 @@
 with builtins;
 with lib;
 let
-  cfg = config.services.osquery;
+  cfg = config.services.osquery-custom;
   logsDirectoryPrefix = "/var/log/";
   stateDirectoryPrefix = "/var/lib/";
   flags = rec {
@@ -20,7 +20,7 @@ let
   };
 in
 {
-  options.services.osquery = {
+  options.services.osquery-custom = {
     enable = mkEnableOption (mdDoc "osqueryd daemon");
 
     settings = mkOption {
