@@ -31,11 +31,64 @@
         targetPkgs = pkgs: with pkgs; [arc pkgs.python3];
         runScript = "${pkgs.python3}/bin/python3 ${arc}/bin/arc";
       };
+
+    yc-yubikey-cli = stdenv.mkDerivation rec {
+      name = "yc-yubikey-cli";
+      src = fetchurl {
+        url = "https://infra.s3.mds.yandex.net/yc-yubikey-cli/build/linux/stable/yc-yubikey-cli";
+        sha256 = "fa4a0de6b4b5f95ee3913c3497eb5e31a8a9df24d5a28659dda5ec1d941c3271";
+      };
+
+      dontUnpack = true;
+
+      ldPath = nixpkgs.lib.makeLibraryPath [stdenv.cc.cc pkgs.pcsclite];
+
+      nativeBuildInputs = [ pkgs.makeWrapper ];
+
+      installPhase = ''
+        install -D $src $out/lib/yc-yubikey-cli
+        patchelf --set-interpreter "$(cat $NIX_CC/nix-support/dynamic-linker)" \
+                "$out/lib/yc-yubikey-cli" 
+
+        makeWrapper $out/lib/yc-yubikey-cli $out/bin/yc-yubikey-cli \
+              --suffix LD_LIBRARY_PATH : ${ldPath}
+        '';
+    };
+
+    pssh = stdenv.mkDerivation rec {
+      name = "pssh";
+
+      version-helper = "PSSH_VERSION=$(curl https://infra.s3.mds.yandex.net/pssh/release/stable)";
+
+      src = fetchurl {
+        url = "https://infra.s3.mds.yandex.net/pssh/release/1.7.12/linux/amd64/pssh";
+        sha256 = "f830a900d59470b962bec237a59a0800979bda26d25ded7b0c1d2714ba149f0a";
+      };
+
+      dontUnpack = true;
+
+      ldPath = nixpkgs.lib.makeLibraryPath [stdenv.cc.cc pkgs.pcsclite];
+
+      nativeBuildInputs = [ pkgs.makeWrapper ];
+
+      installPhase = ''
+        install -D $src $out/lib/pssh
+        patchelf --set-interpreter "$(cat $NIX_CC/nix-support/dynamic-linker)" \
+                "$out/lib/pssh" 
+
+        makeWrapper $out/lib/pssh $out/bin/pssh \
+              --suffix LD_LIBRARY_PATH : ${ldPath}
+        '';
+
+    };
+
     osquery = with pkgs; callPackage ./osquery/default.nix {};
 
     add-packages = final: prev: prev // {
       yandex-arc = arc;
       inherit osquery;
+      inherit yc-yubikey-cli;
+      inherit pssh;
     };
   in
   {
@@ -43,6 +96,8 @@
       inherit arc;
       inherit arc-wrapped;
       inherit osquery;
+      inherit yc-yubikey-cli;
+      inherit pssh;
     };
     overlays = {
       inherit add-packages;
