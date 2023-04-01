@@ -105,7 +105,7 @@
     nixosModules = rec {
       ya-packages = {pkgs,...}: {
         nixpkgs.overlays = [add-packages];
-        environment.systemPackages = with pkgs; [yandex-arc];
+        environment.systemPackages = with pkgs; [yandex-arc pssh];
       };
       osquery = import ./osquery/service.nix;
       yandex-osquery = {...}: {
