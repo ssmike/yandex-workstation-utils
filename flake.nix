@@ -112,6 +112,12 @@
       inherit pssh;
       inherit itsme;
     };
+    override-vpn = final : prev : prev // {
+      openvpn = prev.openvpn.override {
+         openssl = prev.openssl_legacy;
+         pkcs11Support = true;
+      };
+    };
   in
   {
     packages.${system} = {
@@ -127,7 +133,7 @@
     };
     nixosModules = rec {
       ya-packages = {pkgs,...}: {
-        nixpkgs.overlays = [add-packages];
+        nixpkgs.overlays = [add-packages override-vpn];
         environment.systemPackages = with pkgs; [yandex-arc pssh];
       };
       osquery = import ./osquery/service.nix;

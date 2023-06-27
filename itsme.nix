@@ -10,13 +10,6 @@
     tctiEnvironment.enable = true;
   };
 
-  nixpkgs.config.packageOverrides =  super: let self = super.pkgs; in {
-     openvpn = super.openvpn.override {
-        openssl = super.openssl_legacy;
-        pkcs11Support = true;
-     };
-  };
-
   environment.systemPackages = with pkgs; [
     openvpn
     dmidecode
