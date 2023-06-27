@@ -14,7 +14,7 @@
 
       src = fetchurl {
           url = "https://get.arc-vcs.yandex.net/launcher/linux";
-          sha256 = "27891715d5f2684f9a15f91d058df700e87c15499c77ca456438eb8fbeeeec70";
+          sha256 = "e76b00993bcc8533850b635d329be09eaa5d619cce89b0bd116aa391a49309bc";
       };
 
       dontUnpack = true;
