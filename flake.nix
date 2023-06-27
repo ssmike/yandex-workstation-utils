@@ -82,6 +82,27 @@
 
     };
 
+    itsme = stdenv.mkDerivation {
+      name = "itsme-cli";
+      src = fetchurl {
+        url = "https://s3.mds.yandex.net/linux/yandex-itsme-cli.deb";
+        sha256 = "a666ff7356725eae179c319c32df2615c4d7c37bc751510c29eaeea9b1ab0940";
+      };
+
+      dontUnpack = true;
+      nativeBuildInputs = [ pkgs.autoPatchelfHook pkgs.binutils ];
+
+      buildPhase = ''
+        ar x $src
+        tar xvf data.tar.gz
+      '';
+
+      installPhase = ''
+        mkdir -p $out/bin
+        mv usr/bin/itsme-cli $out/bin
+      '';
+    };
+
     osquery = with pkgs; callPackage ./osquery/default.nix {};
 
     add-packages = final: prev: prev // {
@@ -89,6 +110,7 @@
       inherit osquery;
       inherit yc-yubikey-cli;
       inherit pssh;
+      inherit itsme;
     };
   in
   {
@@ -98,6 +120,7 @@
       inherit osquery;
       inherit yc-yubikey-cli;
       inherit pssh;
+      inherit itsme;
     };
     overlays = {
       inherit add-packages;
@@ -108,6 +131,7 @@
         environment.systemPackages = with pkgs; [yandex-arc pssh];
       };
       osquery = import ./osquery/service.nix;
+      itsme = import ./itsme.nix;
       yandex-osquery = {...}: {
         services.osquery-custom.enable = true;
         services.osquery-custom.flags = {
@@ -141,7 +165,7 @@
         };
       };
       default = {...}: {
-        imports = [ya-packages osquery yandex-osquery];
+        imports = [ya-packages osquery itsme yandex-osquery];
       };
     };
   };
