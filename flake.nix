@@ -114,7 +114,6 @@
     };
     override-vpn = final : prev : prev // {
       openvpn = prev.openvpn.override {
-         openssl = prev.openssl_legacy;
          pkcs11Support = true;
       };
     };
@@ -133,7 +132,7 @@
     };
     nixosModules = rec {
       ya-packages = {pkgs,...}: {
-        nixpkgs.overlays = [add-packages override-vpn];
+        nixpkgs.overlays = [add-packages];
         environment.systemPackages = with pkgs; [yandex-arc pssh];
       };
       osquery = import ./osquery/service.nix;
