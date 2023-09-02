@@ -86,7 +86,7 @@
       name = "itsme-cli";
       src = fetchurl {
         url = "https://s3.mds.yandex.net/linux/yandex-itsme-cli.deb";
-        sha256 = "a666ff7356725eae179c319c32df2615c4d7c37bc751510c29eaeea9b1ab0940";
+        sha256 = "a5dcdea9c4af9482cb3554c7394a584fb0a3f6ce56ac7237e0ddc51b34cc340a";
       };
 
       dontUnpack = true;
@@ -111,11 +111,6 @@
       inherit yc-yubikey-cli;
       inherit pssh;
       inherit itsme;
-    };
-    override-vpn = final : prev : prev // {
-      openvpn = prev.openvpn.override {
-         pkcs11Support = true;
-      };
     };
   in
   {

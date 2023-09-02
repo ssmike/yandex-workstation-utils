@@ -1,5 +1,15 @@
 { config, lib, pkgs, ... }:
+
+let
+    override-vpn = final : prev : prev // {
+      openvpn = prev.openvpn.override {
+         pkcs11Support = true;
+      };
+    };
+in
 {
+  nixpkgs.overlays = [ override-vpn ];
+
   services.pcscd.enable = true;
 
   security.tpm2 = {
@@ -18,6 +28,7 @@
     tpm2-tools
     tpm2-tss
     tpm2-pkcs11
+    libp11
     itsme
   ];
 
