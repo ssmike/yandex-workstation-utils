@@ -103,11 +103,8 @@
       '';
     };
 
-    osquery = with pkgs; callPackage ./osquery/default.nix {};
-
     add-packages = final: prev: prev // {
       yandex-arc = arc;
-      inherit osquery;
       inherit yc-yubikey-cli;
       inherit pssh;
       inherit itsme;
@@ -117,7 +114,6 @@
     packages.${system} = {
       inherit arc;
       inherit arc-wrapped;
-      inherit osquery;
       inherit yc-yubikey-cli;
       inherit pssh;
       inherit itsme;
@@ -130,11 +126,10 @@
         nixpkgs.overlays = [add-packages];
         environment.systemPackages = with pkgs; [yandex-arc pssh];
       };
-      osquery = import ./osquery/service.nix;
       itsme = import ./itsme.nix;
       yandex-osquery = {...}: {
-        services.osquery-custom.enable = true;
-        services.osquery-custom.flags = {
+        services.osquery.enable = true;
+        services.osquery.flags = {
           # Configuration control flags
           disable_extensions="true";
           disable_audit="false";
@@ -165,7 +160,7 @@
         };
       };
       default = {...}: {
-        imports = [ya-packages osquery itsme yandex-osquery];
+        imports = [ya-packages itsme yandex-osquery];
       };
     };
   };
