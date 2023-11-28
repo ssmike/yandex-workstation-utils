@@ -33,6 +33,7 @@ in
   ];
 
   # Без этого, p11tool не может найти libtpm2
+  # Падала миграция, чинил патчем https://github.com/tpm2-software/tpm2-pkcs11/issues/845
   environment.etc."pkcs11/modules/libtpm2-pkcs11".text = ''
     module: /run/current-system/sw/lib/libtpm2_pkcs11.so
     critical: yes
