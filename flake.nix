@@ -86,7 +86,7 @@
       name = "itsme-cli";
       src = fetchurl {
         url = "https://s3.mds.yandex.net/linux/yandex-itsme-cli.deb";
-        sha256 = "a5dcdea9c4af9482cb3554c7394a584fb0a3f6ce56ac7237e0ddc51b34cc340a";
+        sha256 = "0fb7945c5b6b8c014146bf73f067bc85dca96e5a321548e926ad8ba839218042";
       };
 
       dontUnpack = true;
